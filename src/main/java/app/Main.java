@@ -5,9 +5,5 @@ import app.config.AppConfig;
 public class Main {
     public static void main(String[] args) {
 
-        AppConfig.startServer();
-
-        //test for workflow
-
-    }
+        AppConfig.startServer();}
 }
