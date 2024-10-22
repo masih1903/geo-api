@@ -1,0 +1,61 @@
+### Create a new country
+POST {{URL}}
+Content-Type: application/json
+
+{
+  "name": {
+    "common": "111111111 Example Country",
+    "official": "The Example Country"
+  },
+  "currencies": {
+    "EXC": {
+      "name": "Example Currency",
+      "symbol": "EX$"
+    }
+  },
+  "region": "Example Region",
+  "population": 123456,
+  "capitals": ["Example City"],
+  "car": {
+    "side": "right",
+    "signs": ["EX"]
+  },
+  "languages": {
+    "ex": "Example Language"
+  }
+}
+
+### Get a country by id
+GET {{URL}}/254
+
+### Get all countries
+GET {{URL}}
+
+### Update a country
+PUT {{URL}}/254
+
+{
+  "name": {
+    "common": "UPDATED Example Country",
+    "official": "UPDATED The Example Country"
+  },
+  "currencies": {
+    "EXC": {
+      "name": "UPDATED Example Currency",
+      "symbol": "EX$"
+    }
+  },
+  "region": "UPDATED Example Region",
+  "population": 123456,
+  "capitals": ["UPDATED Example City"],
+  "car": {
+    "side": "right",
+    "signs": ["EX"]
+  },
+  "languages": {
+    "ex": "UPDATED Example Language"
+  }
+}
+
+### Delete a country
+DELETE {{URL}}/253

@@ -41,12 +41,31 @@ Accept: application/json
 Authorization: Bearer {{jwt_token}}
 
 ### POST example
-POST {{URL}}/hotels
+POST {{URL}}/countries
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{jwt_token}}
 
 {
-  "name": "Hotel Sunrise",
-  "address": "123 Beach Road"
+  "name": {
+    "common": "Example Country",
+    "official": "The Example Country"
+  },
+  "currencies": {
+    "EXC": {
+      "name": "Example Currency",
+      "symbol": "EX$"
+    }
+  },
+  "region": "Example Region",
+  "population": 123456,
+  "capitals": ["Example City"],
+  "car": {
+    "side": "right",
+    "signs": ["EX"]
+  },
+  "languages": {
+    "ex": "Example Language"
+  }
 }
+
