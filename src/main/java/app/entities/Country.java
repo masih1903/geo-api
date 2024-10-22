@@ -68,7 +68,7 @@ public class Country {
 
         this.region = countryDTO.getRegion();
         this.population = countryDTO.getPopulation();
-        this.capitals = countryDTO.getCapitals();
+        this.capitals = countryDTO.getCapital();
         this.drivingSide = countryDTO.getCar().getSide();
         this.carSigns = countryDTO.getCar().getSigns();
         this.languages = countryDTO.getLanguages();

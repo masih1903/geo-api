@@ -15,7 +15,7 @@ Content-Type: application/json
   },
   "region": "Example Region",
   "population": 123456,
-  "capitals": ["Example City"],
+  "capital": ["Example City"],
   "car": {
     "side": "right",
     "signs": ["EX"]
@@ -32,7 +32,7 @@ GET {{URL}}/254
 GET {{URL}}
 
 ### Update a country
-PUT {{URL}}/254
+PUT {{URL}}/263
 
 {
   "name": {
@@ -47,7 +47,7 @@ PUT {{URL}}/254
   },
   "region": "UPDATED Example Region",
   "population": 123456,
-  "capitals": ["UPDATED Example City"],
+  "capital": ["UPDATED Example City"],
   "car": {
     "side": "right",
     "signs": ["EX"]

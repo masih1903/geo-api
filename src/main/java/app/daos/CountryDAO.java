@@ -1,15 +1,19 @@
 package app.daos;
 
+import app.controllers.CountryController;
 import app.dtos.CountryDTO;
 import app.entities.Country;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class CountryDAO implements IDAO<Country>
 {
     private final EntityManagerFactory emf;
+    private final Logger log = LoggerFactory.getLogger(CountryDAO.class);
 
     public CountryDAO(EntityManagerFactory emf)
     {
@@ -34,16 +38,34 @@ public class CountryDAO implements IDAO<Country>
         }
     }
 
+//    @Override
+//    public void create(Country country)
+//    {
+//        try (EntityManager em = emf.createEntityManager())
+//        {
+//            em.getTransaction().begin();
+//            em.persist(country);
+//            em.getTransaction().commit();
+//        }
+//    }
+
+
     @Override
-    public void create(Country country)
-    {
-        try (EntityManager em = emf.createEntityManager())
-        {
+    public void create(Country country) {
+        try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
+
+            // Log before persisting
+            log.debug("Persisting country with capitals: {}", country.getCapitals());
+
             em.persist(country);
             em.getTransaction().commit();
+        } catch (Exception e) {
+            log.error("Error while persisting country: {}", e.getMessage());
+            throw new RuntimeException("Error while persisting country", e);
         }
     }
+
 
     @Override
     public void update(Country country)

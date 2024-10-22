@@ -14,7 +14,7 @@ import java.util.List;
 public class CountryController implements IController
 {
 
-    private final Logger log = LoggerFactory.getLogger(HotelController.class);
+    private final Logger log = LoggerFactory.getLogger(CountryController.class);
     private final CountryDAO countryDAO;
 
     public CountryController(CountryDAO countryDAO)
@@ -29,7 +29,7 @@ public class CountryController implements IController
         try
         {
             // == request ==
-            Integer id = Integer.parseInt(ctx.pathParam("id"));
+            long id = Long.parseLong(ctx.pathParam("id"));
 
             // == querying ==
             Country country = countryDAO.getById(id);
@@ -103,7 +103,7 @@ public class CountryController implements IController
     {
         try {
             // == request ==
-            Integer id = Integer.parseInt(ctx.pathParam("id"));
+            long id = Long.parseLong(ctx.pathParam("id"));
             CountryDTO countryDTO = ctx.bodyAsClass(CountryDTO.class);
 
             // == querying for existing Country ==
@@ -123,7 +123,7 @@ public class CountryController implements IController
             existingCountry.setCurrencySymbol(countryDTO.getCurrencies().values().stream().findFirst().orElse(null).getSymbol());
             existingCountry.setRegion(countryDTO.getRegion());
             existingCountry.setPopulation(countryDTO.getPopulation());
-            existingCountry.setCapitals(countryDTO.getCapitals());
+            existingCountry.setCapitals(countryDTO.getCapital());
             existingCountry.setDrivingSide(countryDTO.getCar().getSide());
             existingCountry.setCarSigns(countryDTO.getCar().getSigns());
             existingCountry.setLanguages(countryDTO.getLanguages());
@@ -151,7 +151,7 @@ public class CountryController implements IController
         try
         {
             // == request ==
-            Integer id = Integer.parseInt(ctx.pathParam("id"));
+            long id = Long.parseLong(ctx.pathParam("id"));
 
             // == querying ==
             Country country = countryDAO.getById(id);

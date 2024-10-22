@@ -20,8 +20,7 @@ public class CountryDTO
     private Map<String, CurrencyDTO> currencies = new HashMap<>(); // Initialize to avoid null
     private Map<String, String> languages;
 
-    @JsonProperty("capital")
-    private List<String> capitals;
+    private List<String> capital;
 
     private String region;
     private long population;
@@ -32,7 +31,7 @@ public class CountryDTO
         this.name = new NameDTO(country.getCommonName(), country.getOfficialName());
         this.currencies = Map.of("currency", new CurrencyDTO(country.getCurrencyName(), country.getCurrencySymbol()));
         this.languages = country.getLanguages();
-        this.capitals = country.getCapitals();
+        this.capital = country.getCapitals();
         this.region = country.getRegion();
         this.population = country.getPopulation();
         this.car = new CarDTO(country.getDrivingSide(), country.getCarSigns());
