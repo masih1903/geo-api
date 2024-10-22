@@ -1,4 +1,4 @@
-package app.Service;
+package app.services;
 
 import app.dtos.CountryDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;

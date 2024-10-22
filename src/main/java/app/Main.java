@@ -1,15 +1,9 @@
 package app;
 
-import app.Service.CountryService;
 import app.config.AppConfig;
-import app.config.HibernateConfig;
-import app.daos.CountryDAO;
-import app.dtos.CountryDTO;
-import jakarta.persistence.EntityManagerFactory;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
 
 public class Main
 {
