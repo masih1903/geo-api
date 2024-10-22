@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class Country {
     private long population;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> capitals;
+    private List<String> capitals = new ArrayList<>(); // Ensure initialization to avoid nulls
 
     private String drivingSide;
 

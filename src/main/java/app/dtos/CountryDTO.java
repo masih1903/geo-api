@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -26,7 +27,8 @@ public class CountryDTO
     private long population;
     private CarDTO car;
 
-    public CountryDTO(Country country) {
+    public CountryDTO(Country country)
+    {
         this.name = new NameDTO(country.getCommonName(), country.getOfficialName());
         this.currencies = Map.of("currency", new CurrencyDTO(country.getCurrencyName(), country.getCurrencySymbol()));
         this.languages = country.getLanguages();
@@ -34,6 +36,11 @@ public class CountryDTO
         this.region = country.getRegion();
         this.population = country.getPopulation();
         this.car = new CarDTO(country.getDrivingSide(), country.getCarSigns());
-
     }
+
+    public static List<CountryDTO> toCountryDTOList(List<Country> countries)
+    {
+        return countries.stream().map(CountryDTO::new).collect(Collectors.toList());
+    }
+
 }
