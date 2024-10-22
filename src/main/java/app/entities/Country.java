@@ -1,6 +1,7 @@
 package app.entities;
 
 import app.dtos.CountryDTO;
+import app.dtos.CurrencyDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,15 +25,15 @@ public class Country {
     private String region;
     private long population;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> capitals;
 
     private String drivingSide;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> carSigns;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @MapKeyColumn(name = "language_code")
     @Column(name = "language_name")
     private Map<String, String> languages;
@@ -41,8 +42,13 @@ public class Country {
 
         this.commonName = countryDTO.getName().getCommon();
         this.officialName = countryDTO.getName().getOfficial();
-        this.currencyName = countryDTO.getCurrencies().get("currencyName").getName();
-        this.currencySymbol = countryDTO.getCurrencies().get("currencySymbol").getSymbol();
+
+        //Fra Karl
+        // Access the first currency directly from the map
+        CurrencyDTO currencyDTO = countryDTO.getCurrencies().values().stream().findFirst().orElse(null);
+        this.currencyName = (currencyDTO != null) ? currencyDTO.getName() : null; // Or a default value
+        this.currencySymbol = (currencyDTO != null) ? currencyDTO.getSymbol() : null; // Or a default value
+
         this.region = countryDTO.getRegion();
         this.population = countryDTO.getPopulation();
         this.capitals = countryDTO.getCapitals();

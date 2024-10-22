@@ -1,5 +1,6 @@
 package app.config;
 
+import app.entities.Country;
 import app.entities.Hotel;
 import app.security.entities.User;
 import app.security.entities.Role;
@@ -100,6 +101,7 @@ public class HibernateConfig {
 
     private static void getAnnotationConfiguration(Configuration configuration) {
         //configuration.addAnnotatedClass(Hotel.class);
+        configuration.addAnnotatedClass(Country.class);
         configuration.addAnnotatedClass(User.class);
         configuration.addAnnotatedClass(Role.class);
 
