@@ -17,7 +17,7 @@ public class CountryDAO implements IDAO<Country>
     }
 
     @Override
-    public Country getById(Integer id)
+    public Country getById(Long id)
     {
         try (EntityManager em = emf.createEntityManager())
         {
@@ -57,7 +57,7 @@ public class CountryDAO implements IDAO<Country>
     }
 
     @Override
-    public void delete(Integer id)
+    public void delete(Long id)
     {
         try (EntityManager em = emf.createEntityManager())
         {

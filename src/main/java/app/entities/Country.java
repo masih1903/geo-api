@@ -38,6 +38,22 @@ public class Country {
     @Column(name = "language_name")
     private Map<String, String> languages;
 
+    public Country(String commonName, String officialName, String currencyName, String currencySymbol,
+                   String region, long population, List<String> capitals, String drivingSide,
+                   List<String> carSigns, Map<String, String> languages) {
+
+        this.commonName = commonName;
+        this.officialName = officialName;
+        this.currencyName = currencyName;
+        this.currencySymbol = currencySymbol;
+        this.region = region;
+        this.population = population;
+        this.capitals = capitals;
+        this.drivingSide = drivingSide;
+        this.carSigns = carSigns;
+        this.languages = languages;
+    }
+
     public Country(CountryDTO countryDTO){
 
         this.commonName = countryDTO.getName().getCommon();
