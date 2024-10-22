@@ -2,10 +2,7 @@ package app.routes;
 
 import app.config.HibernateConfig;
 import app.controllers.CountryController;
-import app.controllers.HotelController;
 import app.daos.CountryDAO;
-import app.daos.HotelDAO;
-import app.entities.Country;
 import app.security.enums.Role;
 import io.javalin.apibuilder.EndpointGroup;
 import jakarta.persistence.EntityManagerFactory;
@@ -18,11 +15,12 @@ public class ContryRoute
     private final CountryDAO countryDao = new CountryDAO(emf);
     private final CountryController countryController = new CountryController(countryDao);
 
-    public EndpointGroup getCountryRoutes() {
+    public EndpointGroup getCountryRoutes()
+    {
         return () ->
         {
             get("/{id}", countryController::getById, Role.ANYONE);
-            get("/", countryController::getAll, Role.ANYONE );
+            get("/", countryController::getAll, Role.ANYONE);
             post("/", countryController::create, Role.ANYONE);
             put("/{id}", countryController::update, Role.ANYONE);
             delete("/{id}", countryController::delete, Role.ANYONE);
