@@ -83,11 +83,11 @@ public class CountryController implements IController
 
             // Debug log: Check if capitals are set correctly before persisting
             log.debug("Capitals before persisting: {}", country.getCapitals());
+
             countryDAO.create(country);
 
             // == response ==
-            ctx.res().setStatus(201);
-            ctx.result("Country created");
+            ctx.status(201).json(new CountryDTO(country));  // Return the created CountryDTO in the response
         } catch (Exception e)
         {
             // Log an error if there is an error
@@ -97,6 +97,7 @@ public class CountryController implements IController
             throw new ApiException(400, e.getMessage());
         }
     }
+
 
     @Override
     public void update(Context ctx)
@@ -108,7 +109,6 @@ public class CountryController implements IController
             CountryDTO countryDTO = ctx.bodyAsClass(CountryDTO.class);
 
             // == querying for existing Country ==
-
             Country existingCountry = countryDAO.getById(id);
 
             if (existingCountry == null)
@@ -130,24 +130,25 @@ public class CountryController implements IController
             existingCountry.setCarSigns(countryDTO.getCar().getSigns());
             existingCountry.setLanguages(countryDTO.getLanguages());
 
-            // Update any other fields necessary
-
             // == updating in DB ==
             countryDAO.update(existingCountry);
 
-            // == response ==
+            // == response == return the updated country
             ctx.res().setStatus(200);
-            ctx.result("Country updated");
-        } catch (NumberFormatException e)
+            ctx.json(new CountryDTO(existingCountry));  // Return the updated country as JSON
+        }
+        catch (NumberFormatException e)
         {
             log.error("Invalid Country ID format: {}", e.getMessage());
             throw new ApiException(400, "Invalid Country ID format");
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             log.error("500 {}", e.getMessage());
             throw new ApiException(500, e.getMessage());
         }
     }
+
 
     @Override
     public void delete(Context ctx)
@@ -157,29 +158,31 @@ public class CountryController implements IController
             // == request ==
             long id = Long.parseLong(ctx.pathParam("id"));
 
-            // == querying ==
+            // == querying for the existing country ==
             Country country = countryDAO.getById(id);
 
-            // == response ==
+            if (country == null) {
+                ctx.res().setStatus(404);
+                ctx.result("Country not found");
+                return;
+            }
+
+            // == delete the country ==
             countryDAO.delete(id);
-            ctx.res().setStatus(200);
-            ctx.result("Country deleted");
+
+            // == response ==
+            ctx.status(204);  // No Content
         } catch (NumberFormatException e)
         {
-            // Log an error if there is an error
             log.error("400 {} ", e.getMessage());
-
-            // Throw our own exception, which we created in ApiException.java
-            throw new ApiException(400, e.getMessage());
+            throw new ApiException(400, "Invalid Country ID format");
         } catch (Exception e)
         {
-            // Log an error if there is an error
             log.error("500 {} ", e.getMessage());
-
-            // Throw our own exception, which we created in ApiException.java
             throw new ApiException(500, e.getMessage());
         }
     }
+
 
     public void getCountriesByASpecificRegion(Context ctx)
     {

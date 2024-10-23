@@ -36,12 +36,13 @@ public class AppConfig {
 
     }
 
-    public static void startServer() {
+    public static Javalin startServer() {
         var app = io.javalin.Javalin.create(AppConfig::configuration);
         exceptionContext(app);
         app.beforeMatched(accessController::accessHandler);
         app.error(404, ctx -> ctx.json("Resource not found"));
         app.start(ApiProps.PORT);
+        return app;
     }
 
     public static void stopServer(Javalin app) {
