@@ -19,6 +19,13 @@ public class ContryRoute
     {
         return () ->
         {
+            //Extra
+            get("/region/{region}", countryController::getCountriesByASpecificRegion, Role.ANYONE);
+            get("/top-population", countryController::getTop10HighestPopulation, Role.ANYONE);
+            get("/lowest-population", countryController::getTop10LowestPopulation, Role.ANYONE);
+            get("/car/drivingside/{drivingside}", countryController::getCountriesByASpecificDrivingSide, Role.ANYONE);
+
+            //CRUD
             get("/{id}", countryController::getById, Role.ANYONE);
             get("/", countryController::getAll, Role.ANYONE);
             post("/", countryController::create, Role.ANYONE);

@@ -1,5 +1,6 @@
 package app.daos;
 
+import app.controllers.CountryController;
 import app.dtos.CountryDTO;
 import app.entities.Country;
 import jakarta.persistence.EntityManager;
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CountryDAO implements IDAO<Country> {
     private final EntityManagerFactory emf;
@@ -132,4 +134,45 @@ public class CountryDAO implements IDAO<Country> {
                     .getResultList();
         }
     }
+
+    public List<Country> getSpecificRegion(String region)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
+            return em.createQuery("SELECT c FROM Country c WHERE c.region = :region", Country.class)
+                    .setParameter("region", region)
+                    .getResultList();
+        }
+    }
+
+    public List<Country> getTop10HighestPopulation()
+    {
+        List<Country> countries = getAll();
+        return countries.stream()
+                .sorted((country2, country1) -> Double.compare(country1.getPopulation(), country2.getPopulation()))
+                .limit(10)
+                .collect(Collectors.toList());
+    }
+
+    public List<Country> getTop10LowestPopulation()
+    {
+        List<Country> countries = getAll();
+        return countries.stream()
+                .sorted((country1, country2) -> Double.compare(country1.getPopulation(), country2.getPopulation()))
+                .limit(10)
+                .collect(Collectors.toList());
+    }
+
+    public List<Country> getSpecificDrivingSide(String drivingSide)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
+            return em.createQuery("SELECT c FROM Country c WHERE c.drivingSide = :drivingSide", Country.class)
+                    .setParameter("drivingSide", drivingSide)
+                    .getResultList();
+        }
+    }
+
+
+
 }
