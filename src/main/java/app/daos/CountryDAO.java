@@ -33,34 +33,16 @@ public class CountryDAO implements IDAO<Country> {
         }
     }
 
-//    @Override
-//    public void create(Country country)
-//    {
-//        try (EntityManager em = emf.createEntityManager())
-//        {
-//            em.getTransaction().begin();
-//            em.persist(country);
-//            em.getTransaction().commit();
-//        }
-//    }
-
-
     @Override
-    public void create(Country country) {
-        try (EntityManager em = emf.createEntityManager()) {
+    public void create(Country country)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
             em.getTransaction().begin();
-
-            // Log before persisting
-            log.debug("Persisting country with capitals: {}", country.getCapitals());
-
             em.persist(country);
             em.getTransaction().commit();
-        } catch (Exception e) {
-            log.error("Error while persisting country: {}", e.getMessage());
-            throw new RuntimeException("Error while persisting country", e);
         }
     }
-
 
     @Override
     public void update(Country country) {
