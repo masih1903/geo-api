@@ -1,0 +1,11 @@
+### Get countries by region
+GET {{URL}}/region/Europe
+
+### Get top 10 highest population
+GET {{URL}}/top-population
+
+### Get top 10 lowest population
+GET {{URL}}/lowest-population
+
+### Get country by af specific driving side
+GET {{URL}}/car/drivingside/right
