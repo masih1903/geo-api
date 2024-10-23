@@ -74,12 +74,12 @@ public class CountryDAO implements IDAO<Country> {
         }
     }
 
-    public void getCountryByName(String commonName) {
+    public Country getCountryByName(String commonName) {
         try (EntityManager em = emf.createEntityManager()) {
             Country country = em.createQuery("SELECT c FROM Country c WHERE c.commonName = :commonname", Country.class)
                     .setParameter("commonname", commonName)
                     .getSingleResult();
-            System.out.println(country);
+            return country;
         }
     }
 

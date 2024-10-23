@@ -11,23 +11,19 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class CountryController implements IController
-{
+public class CountryController implements IController {
 
     private final Logger log = LoggerFactory.getLogger(CountryController.class);
     private final CountryDAO countryDAO;
 
-    public CountryController(CountryDAO countryDAO)
-    {
+    public CountryController(CountryDAO countryDAO) {
         this.countryDAO = countryDAO;
     }
 
 
     @Override
-    public void getById(Context ctx)
-    {
-        try
-        {
+    public void getById(Context ctx) {
+        try {
             // == request ==
             long id = Long.parseLong(ctx.pathParam("id"));
 
@@ -39,8 +35,7 @@ public class CountryController implements IController
             ctx.res().setStatus(200);
             ctx.json(countryDTO, CountryDTO.class);
 
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             // Log an error if there is an error
             log.error("400 {} ", e.getMessage());
 
@@ -50,10 +45,8 @@ public class CountryController implements IController
     }
 
     @Override
-    public void getAll(Context ctx)
-    {
-        try
-        {
+    public void getAll(Context ctx) {
+        try {
             // == querying ==
             List<Country> countries = countryDAO.getAll();
 
@@ -62,8 +55,7 @@ public class CountryController implements IController
 
             ctx.res().setStatus(200);
             ctx.json(countryDTOs, CountryDTO.class);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("500 {} ", e.getMessage());
             throw new ApiException(500, e.getMessage());
         }
@@ -71,10 +63,8 @@ public class CountryController implements IController
     }
 
     @Override
-    public void create(Context ctx)
-    {
-        try
-        {
+    public void create(Context ctx) {
+        try {
             // == request ==
             CountryDTO countryDTO = ctx.bodyAsClass(CountryDTO.class);
 
@@ -88,8 +78,7 @@ public class CountryController implements IController
             // == response ==
             ctx.res().setStatus(201);
             ctx.result("Country created");
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             // Log an error if there is an error
             log.error("400 {} ", e.getMessage());
 
@@ -99,10 +88,8 @@ public class CountryController implements IController
     }
 
     @Override
-    public void update(Context ctx)
-    {
-        try
-        {
+    public void update(Context ctx) {
+        try {
             // == request ==
             long id = Long.parseLong(ctx.pathParam("id"));
             CountryDTO countryDTO = ctx.bodyAsClass(CountryDTO.class);
@@ -111,8 +98,7 @@ public class CountryController implements IController
 
             Country existingCountry = countryDAO.getById(id);
 
-            if (existingCountry == null)
-            {
+            if (existingCountry == null) {
                 ctx.res().setStatus(404);
                 ctx.json(new Message(404, "Country not found"), Message.class);
                 return;
@@ -138,22 +124,18 @@ public class CountryController implements IController
             // == response ==
             ctx.res().setStatus(200);
             ctx.result("Country updated");
-        } catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             log.error("Invalid Country ID format: {}", e.getMessage());
             throw new ApiException(400, "Invalid Country ID format");
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("500 {}", e.getMessage());
             throw new ApiException(500, e.getMessage());
         }
     }
 
     @Override
-    public void delete(Context ctx)
-    {
-        try
-        {
+    public void delete(Context ctx) {
+        try {
             // == request ==
             long id = Long.parseLong(ctx.pathParam("id"));
 
@@ -164,15 +146,13 @@ public class CountryController implements IController
             countryDAO.delete(id);
             ctx.res().setStatus(200);
             ctx.result("Country deleted");
-        } catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             // Log an error if there is an error
             log.error("400 {} ", e.getMessage());
 
             // Throw our own exception, which we created in ApiException.java
             throw new ApiException(400, e.getMessage());
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             // Log an error if there is an error
             log.error("500 {} ", e.getMessage());
 
@@ -181,10 +161,8 @@ public class CountryController implements IController
         }
     }
 
-    public void getCountriesByASpecificRegion(Context ctx)
-    {
-        try
-        {
+    public void getCountriesByASpecificRegion(Context ctx) {
+        try {
             // == request ==
             String region = ctx.pathParam("region");
 
@@ -196,8 +174,7 @@ public class CountryController implements IController
 
             ctx.res().setStatus(200);
             ctx.json(countryDTOList, CountryDTO.class);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             // Log an error if there is an error
             log.error("400 {} ", e.getMessage());
 
@@ -206,10 +183,8 @@ public class CountryController implements IController
         }
     }
 
-    public void getTop10HighestPopulation(Context ctx)
-    {
-        try
-        {
+    public void getTop10HighestPopulation(Context ctx) {
+        try {
             // == querying ==
             List<Country> countries = countryDAO.getTop10HighestPopulation();
 
@@ -218,8 +193,7 @@ public class CountryController implements IController
 
             ctx.res().setStatus(200);
             ctx.json(countryDTOList, CountryDTO.class);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             // Log an error if there is an error
             log.error("400 {} ", e.getMessage());
 
@@ -228,10 +202,8 @@ public class CountryController implements IController
         }
     }
 
-    public void getTop10LowestPopulation(Context ctx)
-    {
-        try
-        {
+    public void getTop10LowestPopulation(Context ctx) {
+        try {
             // == querying ==
             List<Country> countries = countryDAO.getTop10LowestPopulation();
 
@@ -240,8 +212,7 @@ public class CountryController implements IController
 
             ctx.res().setStatus(200);
             ctx.json(countryDTOList, CountryDTO.class);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             // Log an error if there is an error
             log.error("400 {} ", e.getMessage());
 
@@ -250,10 +221,8 @@ public class CountryController implements IController
         }
     }
 
-    public void getCountriesByASpecificDrivingSide(Context ctx)
-    {
-        try
-        {
+    public void getCountriesByASpecificDrivingSide(Context ctx) {
+        try {
             // == request ==
             String drivingSide = ctx.pathParam("drivingside");
 
@@ -265,14 +234,130 @@ public class CountryController implements IController
 
             ctx.res().setStatus(200);
             ctx.json(countryDTOList, CountryDTO.class);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             // Log an error if there is an error
             log.error("400 {} ", e.getMessage());
 
             // Throw our own exception, which we created in ApiException.java
             throw new ApiException(400, e.getMessage());
         }
+    }
+
+    public void getCountryByName(Context ctx) {
+
+        try {
+            // == request ==
+            String commonName = ctx.pathParam("commonName");
+
+            // == querying ==
+            Country country = countryDAO.getCountryByName(commonName);
+
+            // == response ==
+            CountryDTO countryDTO = new CountryDTO(country);
+            ctx.res().setStatus(200);
+            ctx.json(countryDTO, CountryDTO.class);
+        } catch (Exception e) {
+            // Log an error if there is an error
+            log.error("400 {} ", e.getMessage());
+
+            // Throw our own exception, which we created in ApiException.java
+            throw new ApiException(400, e.getMessage());
+        }
+
+    }
+
+    public void getCountriesByCurrency(Context ctx){
+
+        try {
+            // == request ==
+            String currencyName = ctx.pathParam("currencyname");
+
+            // == querying ==
+            List<Country> countries = countryDAO.getCountriesByCurrency(currencyName);
+
+            // == response ==
+            List<CountryDTO> countryDTOList = CountryDTO.toCountryDTOList(countries);
+
+            ctx.res().setStatus(200);
+            ctx.json(countryDTOList, CountryDTO.class);
+        } catch (Exception e) {
+            // Log an error if there is an error
+            log.error("400 {} ", e.getMessage());
+
+            // Throw our own exception, which we created in ApiException.java
+            throw new ApiException(400, e.getMessage());
+        }
+
+    }
+
+    public void getCountriesByLanguage(Context ctx) {
+        try {
+            // == request ==
+            String language = ctx.pathParam("language_name");
+
+            // == querying ==
+            List<Country> countries = countryDAO.getCountriesByLanguage(language);
+
+            // == response ==
+            List<CountryDTO> countryDTOList = CountryDTO.toCountryDTOList(countries);
+
+            ctx.res().setStatus(200);
+            ctx.json(countryDTOList, CountryDTO.class);
+        } catch (Exception e) {
+            // Log an error if there is an error
+            log.error("400 {} ", e.getMessage());
+
+            // Throw our own exception, which we created in ApiException.java
+            throw new ApiException(400, e.getMessage());
+        }
+    }
+
+    public void getCountriesByLanguageAndIgnoreOtherLanguages(Context ctx){
+
+        try {
+            // == request ==
+            String language = ctx.pathParam("language_name");
+
+            // == querying ==
+            List<Country> countries = countryDAO.getCountriesByLanguageAndIgnoreOtherLanguages(language);
+
+            // == response ==
+            List<CountryDTO> countryDTOList = CountryDTO.toCountryDTOList(countries);
+
+            ctx.res().setStatus(200);
+            ctx.json(countryDTOList, CountryDTO.class);
+        } catch (Exception e) {
+            // Log an error if there is an error
+            log.error("400 {} ", e.getMessage());
+
+            // Throw our own exception, which we created in ApiException.java
+            throw new ApiException(400, e.getMessage());
+        }
+
+    }
+
+    public void getCountriesByCapital(Context ctx){
+
+        try {
+            // == request ==
+            String capital = ctx.pathParam("capitals");
+
+            // == querying ==
+            List<Country> countries = countryDAO.getCountriesByCapital(capital);
+
+            // == response ==
+            List<CountryDTO> countryDTOList = CountryDTO.toCountryDTOList(countries);
+
+            ctx.res().setStatus(200);
+            ctx.json(countryDTOList, CountryDTO.class);
+        } catch (Exception e) {
+            // Log an error if there is an error
+            log.error("400 {} ", e.getMessage());
+
+            // Throw our own exception, which we created in ApiException.java
+            throw new ApiException(400, e.getMessage());
+        }
+
     }
 
 }
