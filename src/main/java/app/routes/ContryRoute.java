@@ -9,14 +9,12 @@ import jakarta.persistence.EntityManagerFactory;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
-public class ContryRoute
-{
+public class ContryRoute {
     private final EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
     private final CountryDAO countryDao = new CountryDAO(emf);
     private final CountryController countryController = new CountryController(countryDao);
 
-    public EndpointGroup getCountryRoutes()
-    {
+    public EndpointGroup getCountryRoutes() {
         return () ->
         {
             //Extra

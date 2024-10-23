@@ -1,19 +1,14 @@
 package app.daos;
 
-import app.controllers.CountryController;
 import app.dtos.CountryDTO;
 import app.entities.Country;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CountryDAO implements IDAO<Country> {
     private final EntityManagerFactory emf;
-    private final Logger log = LoggerFactory.getLogger(CountryDAO.class);
 
     public CountryDAO(EntityManagerFactory emf) {
         this.emf = emf;
@@ -34,10 +29,8 @@ public class CountryDAO implements IDAO<Country> {
     }
 
     @Override
-    public void create(Country country)
-    {
-        try (EntityManager em = emf.createEntityManager())
-        {
+    public void create(Country country) {
+        try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
             em.persist(country);
             em.getTransaction().commit();
@@ -76,7 +69,7 @@ public class CountryDAO implements IDAO<Country> {
 
     public Country getCountryByName(String commonName) {
         try (EntityManager em = emf.createEntityManager()) {
-            Country country = em.createQuery("SELECT c FROM Country c WHERE c.commonName = :commonname", Country.class)
+            Country country = em.createQuery("SELECT c FROM Country c WHERE LOWER(c.commonName) = LOWER(:commonname)", Country.class)
                     .setParameter("commonname", commonName)
                     .getSingleResult();
             return country;
@@ -85,7 +78,7 @@ public class CountryDAO implements IDAO<Country> {
 
     public List<Country> getCountriesByCurrency(String currencyName) {
         try (EntityManager em = emf.createEntityManager()) {
-            return em.createQuery("SELECT c FROM Country c WHERE c.currencyName = :currencyname", Country.class)
+            return em.createQuery("SELECT c FROM Country c WHERE LOWER(c.currencyName) = LOWER(:currencyname)", Country.class)
                     .setParameter("currencyname", currencyName)
                     .getResultList();
         }
@@ -94,7 +87,7 @@ public class CountryDAO implements IDAO<Country> {
     public List<Country> getCountriesByLanguage(String language) {
         try (EntityManager em = emf.createEntityManager()) {
             return em.createQuery(
-                            "SELECT c FROM Country c JOIN c.languages lang WHERE lang = :language_name", Country.class)
+                            "SELECT c FROM Country c JOIN c.languages lang WHERE LOWER(lang) = LOWER(:language_name)", Country.class)
                     .setParameter("language_name", language)
                     .getResultList();
         }
@@ -103,32 +96,29 @@ public class CountryDAO implements IDAO<Country> {
     public List<Country> getCountriesByLanguageAndIgnoreOtherLanguages(String language) {
         try (EntityManager em = emf.createEntityManager()) {
             return em.createQuery(
-                            "SELECT c FROM Country c JOIN c.languages lang WHERE lang = :language_name AND SIZE(c.languages) = 1", Country.class)
-                    .setParameter("language_name", "English")
+                            "SELECT c FROM Country c JOIN c.languages lang WHERE LOWER(lang) = LOWER(:language_name) AND SIZE(c.languages) = 1", Country.class)
+                    .setParameter("language_name", language)
                     .getResultList();
         }
     }
 
     public List<Country> getCountriesByCapital(String capital) {
         try (EntityManager em = emf.createEntityManager()) {
-            return em.createQuery("SELECT c FROM Country c WHERE :capitals MEMBER OF c.capitals", Country.class)
-                    .setParameter("capitals", capital)
+            return em.createQuery("SELECT c FROM Country c JOIN c.capitals cap WHERE LOWER(REPLACE(cap, ' ', '')) = LOWER(REPLACE(:capital, ' ', ''))", Country.class)
+                    .setParameter("capital", capital)
                     .getResultList();
         }
     }
 
-    public List<Country> getSpecificRegion(String region)
-    {
-        try (EntityManager em = emf.createEntityManager())
-        {
-            return em.createQuery("SELECT c FROM Country c WHERE c.region = :region", Country.class)
+    public List<Country> getSpecificRegion(String region) {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("SELECT c FROM Country c WHERE LOWER(c.region) = LOWER(:region)", Country.class)
                     .setParameter("region", region)
                     .getResultList();
         }
     }
 
-    public List<Country> getTop10HighestPopulation()
-    {
+    public List<Country> getTop10HighestPopulation() {
         List<Country> countries = getAll();
         return countries.stream()
                 .sorted((country2, country1) -> Double.compare(country1.getPopulation(), country2.getPopulation()))
@@ -136,8 +126,7 @@ public class CountryDAO implements IDAO<Country> {
                 .collect(Collectors.toList());
     }
 
-    public List<Country> getTop10LowestPopulation()
-    {
+    public List<Country> getTop10LowestPopulation() {
         List<Country> countries = getAll();
         return countries.stream()
                 .sorted((country1, country2) -> Double.compare(country1.getPopulation(), country2.getPopulation()))
@@ -145,16 +134,11 @@ public class CountryDAO implements IDAO<Country> {
                 .collect(Collectors.toList());
     }
 
-    public List<Country> getSpecificDrivingSide(String drivingSide)
-    {
-        try (EntityManager em = emf.createEntityManager())
-        {
-            return em.createQuery("SELECT c FROM Country c WHERE c.drivingSide = :drivingSide", Country.class)
+    public List<Country> getSpecificDrivingSide(String drivingSide) {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("SELECT c FROM Country c WHERE LOWER(c.drivingSide) = LOWER(:drivingSide)", Country.class)
                     .setParameter("drivingSide", drivingSide)
                     .getResultList();
         }
     }
-
-
-
 }

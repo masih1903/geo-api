@@ -1,5 +1,5 @@
 ### Get countries by region
-GET {{URL}}/region/Europe
+GET {{URL}}/region/europe
 
 ### Get top 10 highest population
 GET {{URL}}/top-population
@@ -11,16 +11,16 @@ GET {{URL}}/lowest-population
 GET {{URL}}/car/drivingside/right
 
 ### Get country by af specific name
-GET {{URL}}/name/Germany
+GET {{URL}}/name/germany
 
 ### Get country by af specific currency
-GET {{URL}}/currency/Euro
+GET {{URL}}/currency/euro
 
 ### Get country by af specific language
-GET {{URL}}/languages/English
+GET {{URL}}/languages/english
 
 ### Get country by af specific language and ignore other languages
-GET {{URL}}/language/English
+GET {{URL}}/language/english
 
 ### Get country by af specific capital
-GET {{URL}}/capital/Cape Town
+GET {{URL}}/capital/capetown
