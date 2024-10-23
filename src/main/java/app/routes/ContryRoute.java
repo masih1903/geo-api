@@ -31,9 +31,9 @@ public class ContryRoute {
             //CRUD
             get("/{id}", countryController::getById, Role.ANYONE);
             get("/", countryController::getAll, Role.ANYONE);
-            post("/", countryController::create, Role.ANYONE);
-            put("/{id}", countryController::update, Role.ANYONE);
-            delete("/{id}", countryController::delete, Role.ANYONE);
+            post("/", countryController::create, Role.ADMIN);
+            put("/{id}", countryController::update, Role.ADMIN);
+            delete("/{id}", countryController::delete, Role.ADMIN);
         };
     }
 }
