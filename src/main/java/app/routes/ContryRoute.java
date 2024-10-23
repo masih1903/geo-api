@@ -24,6 +24,11 @@ public class ContryRoute
             get("/top-population", countryController::getTop10HighestPopulation, Role.ANYONE);
             get("/lowest-population", countryController::getTop10LowestPopulation, Role.ANYONE);
             get("/car/drivingside/{drivingside}", countryController::getCountriesByASpecificDrivingSide, Role.ANYONE);
+            get("/name/{name}", countryController::getCountryByName, Role.ANYONE);
+            get("/currency/{currency}", countryController::getCountriesByCurrency, Role.ANYONE);
+            get("/languages/{languages}", countryController::getCountriesByLanguage, Role.ANYONE);
+            get("/language/{language}", countryController::getCountriesByLanguageAndIgnoreOtherLanguages, Role.ANYONE);
+            get("/capital/{capitals}", countryController::getCountriesByCapital, Role.ANYONE);
 
             //CRUD
             get("/{id}", countryController::getById, Role.ANYONE);

@@ -9,3 +9,18 @@ GET {{URL}}/lowest-population
 
 ### Get country by af specific driving side
 GET {{URL}}/car/drivingside/right
+
+### Get country by af specific name
+GET {{URL}}/name/Germany
+
+### Get country by af specific currency
+GET {{URL}}/currency/Euro
+
+### Get country by af specific language
+GET {{URL}}/languages/English
+
+### Get country by af specific language and ignore other languages
+GET {{URL}}/language/English
+
+### Get country by af specific capital
+GET {{URL}}/capital/Cape Town

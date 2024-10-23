@@ -247,7 +247,7 @@ public class CountryController implements IController {
 
         try {
             // == request ==
-            String commonName = ctx.pathParam("commonName");
+            String commonName = ctx.pathParam("name");
 
             // == querying ==
             Country country = countryDAO.getCountryByName(commonName);
@@ -266,11 +266,11 @@ public class CountryController implements IController {
 
     }
 
-    public void getCountriesByCurrency(Context ctx){
+    public void getCountriesByCurrency(Context ctx) {
 
         try {
             // == request ==
-            String currencyName = ctx.pathParam("currencyname");
+            String currencyName = ctx.pathParam("currency");
 
             // == querying ==
             List<Country> countries = countryDAO.getCountriesByCurrency(currencyName);
@@ -293,7 +293,7 @@ public class CountryController implements IController {
     public void getCountriesByLanguage(Context ctx) {
         try {
             // == request ==
-            String language = ctx.pathParam("language_name");
+            String language = ctx.pathParam("languages");
 
             // == querying ==
             List<Country> countries = countryDAO.getCountriesByLanguage(language);
@@ -312,11 +312,11 @@ public class CountryController implements IController {
         }
     }
 
-    public void getCountriesByLanguageAndIgnoreOtherLanguages(Context ctx){
+    public void getCountriesByLanguageAndIgnoreOtherLanguages(Context ctx) {
 
         try {
             // == request ==
-            String language = ctx.pathParam("language_name");
+            String language = ctx.pathParam("language");
 
             // == querying ==
             List<Country> countries = countryDAO.getCountriesByLanguageAndIgnoreOtherLanguages(language);
@@ -336,7 +336,7 @@ public class CountryController implements IController {
 
     }
 
-    public void getCountriesByCapital(Context ctx){
+    public void getCountriesByCapital(Context ctx) {
 
         try {
             // == request ==
