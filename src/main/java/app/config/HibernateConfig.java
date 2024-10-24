@@ -46,7 +46,7 @@ public class HibernateConfig {
         try {
             Configuration configuration = new Configuration();
             Properties props = new Properties();
-            hibernateDevelopmentConfiguration(props);
+            hibernateDevelopmentConfiguration(props); // Keeps ApiProps intact
             hibernateBasicConfiguration(props);
             return getEntityManagerFactory(configuration, props);
         } catch (Throwable ex) {
@@ -74,6 +74,35 @@ public class HibernateConfig {
     }
 
     private static void hibernateDevelopmentConfiguration(Properties props) throws IOException {
+        // If deployed environment variable is set, use deployed configuration
+        if (System.getenv("DEPLOYED") != null && System.getenv("DEPLOYED").equals("true")) {
+            setDeployedProperties(props);
+        } else {
+            // Use local development properties
+            //setDevProperties(props);
+
+            // Use web development properties
+            setDevPropertiesWebServer(props);
+        }
+    }
+
+    // For deployed environment (e.g., Docker or cloud)
+    private static void setDeployedProperties(Properties props) {
+        String DBName = System.getenv("DB_NAME");
+        props.setProperty("hibernate.connection.url", System.getenv("CONNECTION_STR") + DBName);
+        props.setProperty("hibernate.connection.username", System.getenv("DB_USERNAME"));
+        props.setProperty("hibernate.connection.password", System.getenv("DB_PASSWORD"));
+    }
+
+    // For web development (e.g., connecting to web server)
+    private static void setDevPropertiesWebServer(Properties props) {
+        props.put("hibernate.connection.url", ApiProps.DB_URL_WEBSERVER);
+        props.put("hibernate.connection.username", ApiProps.DB_USER_WEBSERVER);
+        props.put("hibernate.connection.password", ApiProps.DB_PASS_WEBSERVER);
+    }
+
+    // For local development (fallback to ApiProps)
+    private static void setDevProperties(Properties props) {
         props.put("hibernate.connection.url", ApiProps.DB_URL);
         props.put("hibernate.connection.username", ApiProps.DB_USER);
         props.put("hibernate.connection.password", ApiProps.DB_PASS);
@@ -99,11 +128,8 @@ public class HibernateConfig {
     }
 
     private static void getAnnotationConfiguration(Configuration configuration) {
-
         configuration.addAnnotatedClass(Country.class);
         configuration.addAnnotatedClass(User.class);
         configuration.addAnnotatedClass(Role.class);
-
     }
-
 }
