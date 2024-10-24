@@ -58,4 +58,4 @@ PUT {{URL}}/263
 }
 
 ### Delete a country
-DELETE {{URL}}/253
+DELETE {{URL}}/251
