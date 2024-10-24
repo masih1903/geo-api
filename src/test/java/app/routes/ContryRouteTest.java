@@ -23,7 +23,7 @@ class ContryRouteTest
 {
     private static Javalin app;
     private static EntityManagerFactory emf;
-    private static String BASE_URL = "http://localhost:7070/api";
+    private static String BASE_URL = "http://localhost:7007/api";
     private static CountryDAO countryDao;
     private static CountryPopulator populator;
     private static CountryDTO denmark, japan, usa;
