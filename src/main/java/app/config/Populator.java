@@ -1,24 +1,25 @@
-package app;
+package app.config;
 
-import app.config.HibernateConfig;
 import app.daos.CountryDAO;
 import app.dtos.CountryDTO;
 import app.entities.Country;
+import app.security.entities.Role;
+import app.security.entities.User;
+import dk.bugelhartmann.UserDTO;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class CountryPopulator
-{
+public class Populator {
 
     private static EntityManagerFactory emf;
     private static CountryDAO countryDao;
 
-    public CountryPopulator(EntityManagerFactory emf, CountryDAO countryDao) {
-        CountryPopulator.emf = emf;
-        CountryPopulator.countryDao = countryDao;
+    public Populator(EntityManagerFactory emf, CountryDAO countryDao) {
+        Populator.emf = emf;
+        Populator.countryDao = countryDao;
     }
 
     public List<CountryDTO> populateCountries() {
@@ -31,8 +32,8 @@ public class CountryPopulator
 
             // Create country objects
             Country denmark = new Country(
-                "Denmark", "The Kingdom of Denmark", "Danish Krone", "kr", "Europe", 5831404L,
-                List.of("Copenhagen"), "right", List.of("DK"), Map.of("da", "Danish"));
+                    "Denmark", "The Kingdom of Denmark", "Danish Krone", "kr", "Europe", 5831404L,
+                    List.of("Copenhagen"), "right", List.of("DK"), Map.of("da", "Danish"));
 
             Country japan = new Country(
                     "Japan", "Japan", "Yen", "¥", "Asia", 125960000L,
@@ -53,13 +54,44 @@ public class CountryPopulator
         }
     }
 
-    public void cleanUpCountries() {
+    public static UserDTO[] populateUsers() {
+
+        User user, admin;
+        Role userRole, adminRole;
+
+        user = new User("usertest", "user123");
+        admin = new User("admintest", "admin123");
+        userRole = new Role("USER");
+        adminRole = new Role("ADMIN");
+        user.addRole(userRole);
+        admin.addRole(adminRole);
+
         if (emf == null) {
             throw new IllegalStateException("EntityManagerFactory is not initialized");
         }
 
         try (var em = emf.createEntityManager()) {
             em.getTransaction().begin();
+            em.persist(userRole);
+            em.persist(adminRole);
+            em.persist(user);
+            em.persist(admin);
+            em.getTransaction().commit();
+        }
+        UserDTO userDTO = new UserDTO(user.getUsername(), "user123");
+        UserDTO adminDTO = new UserDTO(admin.getUsername(), "admin123");
+        return new UserDTO[]{userDTO, adminDTO};
+    }
+
+    public void cleanUp() {
+        if (emf == null) {
+            throw new IllegalStateException("EntityManagerFactory is not initialized");
+        }
+
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            em.createQuery("DELETE FROM User").executeUpdate();
+            em.createQuery("DELETE FROM Role").executeUpdate();
             em.createQuery("DELETE FROM Country").executeUpdate();
             em.createNativeQuery("ALTER SEQUENCE country_id_seq RESTART WITH 1").executeUpdate();
             em.getTransaction().commit();
@@ -67,5 +99,4 @@ public class CountryPopulator
             e.printStackTrace();
         }
     }
-
 }

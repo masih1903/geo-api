@@ -1,6 +1,6 @@
 package app.routes;
 
-import app.CountryPopulator;
+import app.config.Populator;
 import app.config.AppConfig;
 import app.config.HibernateConfig;
 import app.daos.CountryDAO;
@@ -8,6 +8,10 @@ import app.dtos.CarDTO;
 import app.dtos.CountryDTO;
 import app.dtos.CurrencyDTO;
 import app.dtos.NameDTO;
+import app.security.controllers.SecurityController;
+import app.security.daos.SecurityDAO;
+import app.security.exceptions.ValidationException;
+import dk.bugelhartmann.UserDTO;
 import io.javalin.Javalin;
 import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.*;
@@ -19,67 +23,92 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-class ContryRouteTest
-{
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class ContryRouteTest {
+
     private static Javalin app;
     private static EntityManagerFactory emf;
     private static String BASE_URL = "http://localhost:7007/api";
     private static CountryDAO countryDao;
-    private static CountryPopulator populator;
+    private static SecurityDAO securityDAO;
+    private static SecurityController securityController;
+    private static Populator populator;
     private static CountryDTO denmark, japan, usa;
     private static List<CountryDTO> countries;
+    private static UserDTO userDTO, adminDTO;
+    private static String userToken, adminToken;
+    private static UserDTO[] users;
 
     @BeforeAll
-    static void init()
-    {
+    static void init() {
         HibernateConfig.setTest(true);
         emf = HibernateConfig.getEntityManagerFactoryConfigTest();
         countryDao = new CountryDAO(emf);  // Initialize the DAO after emf is set
-        populator = new CountryPopulator(emf, countryDao);  // Initialize Populator after emf and DAO are set
+        securityDAO = new SecurityDAO(emf);
+        securityController = SecurityController.getInstance();
+        populator = new Populator(emf, countryDao);  // Initialize Populator after emf and DAO are set
         app = AppConfig.startServer();
     }
 
     @BeforeEach
-    void setUp()
-    {
+    void setUp() {
         countries = populator.populateCountries();
         denmark = countries.get(0);
         japan = countries.get(1);
         usa = countries.get(2);
+        users = Populator.populateUsers();
+        userDTO = users[0];
+        adminDTO = users[1];
+
+        try {
+            UserDTO verifiedUser = securityDAO.getVerifiedUser(userDTO.getUsername(), userDTO.getPassword());
+            UserDTO verifiedAdmin = securityDAO.getVerifiedUser(adminDTO.getUsername(), adminDTO.getPassword());
+            userToken = "Bearer " + securityController.createToken(verifiedUser);
+            adminToken = "Bearer " + securityController.createToken(verifiedAdmin);
+        } catch (ValidationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @AfterEach
-    void tearDown()
-    {
-        populator.cleanUpCountries();
+    void tearDown() {
+        populator.cleanUp();
+
     }
 
     @AfterAll
-    static void closeDown()
-    {
+    static void closeDown() {
         AppConfig.stopServer(app);
     }
 
     @Test
-    void testGetAllCountries()
-    {
-        CountryDTO[] countries = given().when().get(BASE_URL + "/countries").then().log().all().statusCode(200).extract().as(CountryDTO[].class);
+    void testGetAllCountries() {
+        CountryDTO[] countries =
+                given()
+                        .when()
+                        .get(BASE_URL + "/countries")
+                        .then()
+                        .log()
+                        .all()
+                        .statusCode(200)
+                        .extract().as(CountryDTO[].class);
 
         assertThat(countries.length, is(3));
         assertThat(countries, arrayContainingInAnyOrder(equalTo(denmark), equalTo(japan), equalTo(usa)));
     }
 
     @Test
-    void testGetCountryById()
-    {
+    void testGetCountryById() {
         CountryDTO countryDTO = given().when().get(BASE_URL + "/countries/1").then().log().all().statusCode(200).extract().as(CountryDTO.class);
 
         assertThat(countryDTO, equalTo(denmark));
     }
 
     @Test
-    void testCreateCountry()
-    {
+    void testCreateCountry() {
+        System.out.println("usertoken: " + userToken);
+        System.out.println("admintoken: " + adminToken);
+
         // Create a NameDTO for the country
         NameDTO nameDTO = new NameDTO("Pakistan", "Islamic Republic of Pakistan");
 
@@ -104,7 +133,20 @@ class ContryRouteTest
         countryDTO.setCar(carDTO);
 
         // Make a POST request to create the country
-        CountryDTO createdCountry = given().contentType("application/json").body(countryDTO).when().post(BASE_URL + "/countries").then().log().all().statusCode(201).extract().as(CountryDTO.class);
+        CountryDTO createdCountry =
+                given()
+                        .contentType("application/json")
+                        .body(countryDTO)
+                        .when()
+                        .header("Authorization", adminToken)
+                        .post(BASE_URL + "/countries")
+                        .then()
+                        .log()
+                        .all()
+                        .statusCode(201)
+                        .extract()
+                        .as(CountryDTO.class);
+
         assertThat(createdCountry.getName().getCommon(), equalTo(countryDTO.getName().getCommon()));
         assertThat(createdCountry.getName().getOfficial(), equalTo(countryDTO.getName().getOfficial()));
         // Adjust the test to look for the "currency" key instead of "PKR"
@@ -119,8 +161,10 @@ class ContryRouteTest
     }
 
     @Test
-    void testUpdateCountry()
-    {
+    void testUpdateCountry() {
+        System.out.println("usertoken: " + userToken);
+        System.out.println("admintoken: " + adminToken);
+
         // Create a NameDTO for the updated country
         NameDTO updatedName = new NameDTO("Pakistan Updated", "Islamic Republic of Pakistan Updated");
 
@@ -139,10 +183,17 @@ class ContryRouteTest
         pakistan.setCar(new CarDTO("left", List.of("PK")));
 
         // Make a PUT request to update the country
-        CountryDTO updatedCountry = given().contentType("application/json").body(pakistan)  // Send the updated CountryDTO as the request body
-                .when().put(BASE_URL + "/countries/1")  // Assuming '1' is the ID of the country being updated
-                .then().log().all().statusCode(200)  // Expect HTTP 200 OK
-                .extract().as(CountryDTO.class);
+        CountryDTO updatedCountry =
+                given()
+                        .contentType("application/json")
+                        .body(pakistan)  // Send the updated CountryDTO as the request body
+                        .when()
+                        .header("Authorization", adminToken)
+                        .put(BASE_URL + "/countries/1")  // Assuming '1' is the ID of the country being updated
+                        .then()
+                        .log().all().statusCode(200)  // Expect HTTP 200 OK
+                        .extract()
+                        .as(CountryDTO.class);
 
         // Validate the updated fields
         assertThat(updatedCountry.getName().getCommon(), equalTo(pakistan.getName().getCommon()));
@@ -156,13 +207,29 @@ class ContryRouteTest
     }
 
     @Test
-    void deleteCountry()
-    {
+    void deleteCountry() {
         // Perform DELETE request to delete the country with ID 1
-        given().when().delete(BASE_URL + "/countries/1").then().log().all().statusCode(204);  // Expect 204 No Content on successful deletion
+        given()
+                .when()
+                .header("Authorization", adminToken)
+                .delete(BASE_URL + "/countries/1")
+                .then()
+                .log()
+                .all()
+                .statusCode(204);  // Expect 204 No Content on successful deletion
 
         // Verify that the remaining countries are Japan and USA
-        CountryDTO[] countryDTOS = given().when().get(BASE_URL + "/countries").then().log().all().statusCode(200).extract().as(CountryDTO[].class);
+        CountryDTO[] countryDTOS =
+                given()
+                        .when()
+                        .header("Authorization", adminToken)
+                        .get(BASE_URL + "/countries")
+                        .then()
+                        .log()
+                        .all()
+                        .statusCode(200)
+                        .extract()
+                        .as(CountryDTO[].class);
 
         // Check that there are now only 2 countries remaining after deletion
         assertThat(countryDTOS.length, is(2));
