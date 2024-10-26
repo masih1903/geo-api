@@ -9,8 +9,7 @@ import java.util.List;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
-public class CarDTO
-{
+public class CarDTO {
     private List<String> signs;
     private String side;
 

@@ -45,9 +45,9 @@ class CountryDAOTest {
                 "right", List.of("MEX"), Map.of("es", "Spanish"));
 
 
-            countryDAO.create(c1);
-            countryDAO.create(c2);
-            countryDAO.create(c3);
+        countryDAO.create(c1);
+        countryDAO.create(c2);
+        countryDAO.create(c3);
     }
 
     @AfterEach
@@ -58,8 +58,7 @@ class CountryDAOTest {
             em.createQuery("DELETE FROM Country").executeUpdate();
             em.createNativeQuery("ALTER SEQUENCE country_id_seq RESTART WITH 1").executeUpdate();
             em.getTransaction().commit();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -67,8 +66,8 @@ class CountryDAOTest {
     @Test
     void getById() {
 
-            Country country = countryDAO.getById(1L);
-            assertEquals(c1.getId(), country.getId());
+        Country country = countryDAO.getById(1L);
+        assertEquals(c1.getId(), country.getId());
     }
 
     @Test
@@ -100,7 +99,7 @@ class CountryDAOTest {
     @Test
     void delete() {
 
-            countryDAO.delete(1L);
-            assertNull(countryDAO.getById(1L));
+        countryDAO.delete(1L);
+        assertNull(countryDAO.getById(1L));
     }
 }

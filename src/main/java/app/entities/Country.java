@@ -58,7 +58,7 @@ public class Country {
         this.languages = languages;
     }
 
-    public Country(CountryDTO countryDTO){
+    public Country(CountryDTO countryDTO) {
 
         this.commonName = countryDTO.getName().getCommon();
         this.officialName = countryDTO.getName().getOfficial();

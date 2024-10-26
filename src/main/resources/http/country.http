@@ -15,10 +15,14 @@ Content-Type: application/json
   },
   "region": "Example Region",
   "population": 123456,
-  "capital": ["Example City"],
+  "capital": [
+    "Example City"
+  ],
   "car": {
     "side": "right",
-    "signs": ["EX"]
+    "signs": [
+      "EX"
+    ]
   },
   "languages": {
     "ex": "Example Language"

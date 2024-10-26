@@ -77,8 +77,7 @@ public class CountryController implements IController {
 
             // == response ==
             ctx.status(201).json(new CountryDTO(country));  // Return the created CountryDTO in the response
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             // Log an error if there is an error
             log.error("400 {} ", e.getMessage());
 
@@ -124,14 +123,10 @@ public class CountryController implements IController {
             // == response ==
             ctx.res().setStatus(200);
             ctx.json(new CountryDTO(existingCountry));  // Return the updated country as JSON
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             log.error("Invalid Country ID format: {}", e.getMessage());
             throw new ApiException(400, "Invalid Country ID format");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("500 {}", e.getMessage());
             throw new ApiException(500, e.getMessage());
         }
@@ -157,21 +152,17 @@ public class CountryController implements IController {
 
             // == response ==
             ctx.status(204);  // No Content
-        } catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             log.error("400 {} ", e.getMessage());
             throw new ApiException(400, "Invalid Country ID format");
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("500 {} ", e.getMessage());
             throw new ApiException(500, e.getMessage());
         }
     }
 
-    public void getCountriesByASpecificRegion(Context ctx)
-    {
-        try
-        {
+    public void getCountriesByASpecificRegion(Context ctx) {
+        try {
             // == request ==
             String region = ctx.pathParam("region");
 

@@ -2,7 +2,6 @@ package app.dtos;
 
 import app.entities.Country;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,8 +13,7 @@ import java.util.stream.Collectors;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
-public class CountryDTO
-{
+public class CountryDTO {
     private NameDTO name;
     private Map<String, CurrencyDTO> currencies = new HashMap<>(); // Initialize to avoid null
     private Map<String, String> languages;
@@ -26,8 +24,7 @@ public class CountryDTO
     private long population;
     private CarDTO car;
 
-    public CountryDTO(Country country)
-    {
+    public CountryDTO(Country country) {
         this.name = new NameDTO(country.getCommonName(), country.getOfficialName());
         this.currencies = Map.of("currency", new CurrencyDTO(country.getCurrencyName(), country.getCurrencySymbol()));
         this.languages = country.getLanguages();
@@ -37,8 +34,7 @@ public class CountryDTO
         this.car = new CarDTO(country.getDrivingSide(), country.getCarSigns());
     }
 
-    public static List<CountryDTO> toCountryDTOList(List<Country> countries)
-    {
+    public static List<CountryDTO> toCountryDTOList(List<Country> countries) {
         return countries.stream().map(CountryDTO::new).collect(Collectors.toList());
     }
 

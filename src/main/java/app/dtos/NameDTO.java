@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class NameDTO
-{
+public class NameDTO {
     private String common;
     private String official;
 }
