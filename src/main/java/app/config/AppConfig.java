@@ -41,7 +41,7 @@ public class AppConfig {
         var app = io.javalin.Javalin.create(AppConfig::configuration);
         exceptionContext(app);
         app.beforeMatched(accessController::accessHandler);
-        app.error(404, ctx -> ctx.json("Resource not found"));
+        app.error(404, ctx -> ctx.json("Welcome to our GEO API - See the different routes at /routes"));
         app.start(ApiProps.PORT);
         return app;
     }

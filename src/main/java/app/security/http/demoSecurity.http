@@ -69,3 +69,8 @@ Authorization: Bearer {{jwt_token}}
   }
 }
 
+### Delete a country
+DELETE {{URL}}/252
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
