@@ -8,9 +8,9 @@ public class ApiProps {
     public static final String DB_PASS = "postgres";
     public static final String DB_URL = "jdbc:postgresql://localhost:5432/" + DB_NAME;
 
-    public static final String IP = "209.38.250.146";
-    public static final String DB_USER_WEBSERVER = "postgres";
-    public static final String DB_PASS_WEBSERVER = "cphmk330";
+    public static final String IP = System.getenv("IP");
+    public static final String DB_USER_WEBSERVER = System.getenv("DB_USER_WEBSERVER");
+    public static final String DB_PASS_WEBSERVER = System.getenv("DB_PASS_WEBSERVER");
     public static final String DB_URL_WEBSERVER = "jdbc:postgresql://" + IP + ":5432/" + DB_NAME;
 
 
