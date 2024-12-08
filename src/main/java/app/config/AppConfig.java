@@ -40,18 +40,24 @@ public class AppConfig {
 
     // == CORS Configuration ==
     private static void corsHeaders(Context ctx) {
-        ctx.header("Access-Control-Allow-Origin", "*");
+        String origin = ctx.header("Origin"); // Hent 'Origin' fra anmodningen
+        if (origin != null && (origin.equals("http://localhost:5173") || origin.equals("https://atlas-api.ut-cphb.dk"))) {
+            ctx.header("Access-Control-Allow-Origin", origin); // Sæt oprindelsen dynamisk
+        }
         ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         ctx.header("Access-Control-Allow-Credentials", "true");
     }
 
     private static void corsHeadersOptions(Context ctx) {
-        ctx.header("Access-Control-Allow-Origin", "*");
+        String origin = ctx.header("Origin"); // Hent 'Origin' fra anmodningen
+        if (origin != null && (origin.equals("http://localhost:5173") || origin.equals("https://atlas-api.ut-cphb.dk"))) {
+            ctx.header("Access-Control-Allow-Origin", origin); // Sæt oprindelsen dynamisk
+        }
         ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
         ctx.header("Access-Control-Allow-Credentials", "true");
-        ctx.status(204);
+        ctx.status(204); // No Content for OPTIONS
     }
 
     public static Javalin startServer() {
