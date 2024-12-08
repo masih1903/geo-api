@@ -9,6 +9,7 @@ import app.security.routes.SecurityRoutes;
 import app.utils.ApiProps;
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
+import io.javalin.http.Context;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
@@ -37,8 +38,28 @@ public class AppConfig {
 
     }
 
+    // == CORS Configuration ==
+    private static void corsHeaders(Context ctx) {
+        ctx.header("Access-Control-Allow-Origin", "*");
+        ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        ctx.header("Access-Control-Allow-Credentials", "true");
+    }
+
+    private static void corsHeadersOptions(Context ctx) {
+        ctx.header("Access-Control-Allow-Origin", "*");
+        ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        ctx.header("Access-Control-Allow-Credentials", "true");
+        ctx.status(204);
+    }
+
     public static Javalin startServer() {
         var app = io.javalin.Javalin.create(AppConfig::configuration);
+        // Add CORS support
+        app.before(AppConfig::corsHeaders);
+        app.options("/*", AppConfig::corsHeadersOptions);
+
         exceptionContext(app);
         app.beforeMatched(accessController::accessHandler);
         app.error(404, ctx -> ctx.json("Welcome to our GEO API - See the different routes at /routes"));
