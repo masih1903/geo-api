@@ -41,36 +41,44 @@ public class AppConfig {
     // == CORS Configuration ==
     private static void corsHeaders(Context ctx) {
         String origin = ctx.header("Origin"); // Hent 'Origin' fra anmodningen
-        if (origin != null && (origin.equals("http://localhost:5173") || origin.equals("https://atlas-api.ut-cphb.dk"))) {
+        if (origin != null && (origin.equals("http://localhost:5173") || origin.equals("https://atlasapi.ut-cphb.dk"))) {
             ctx.header("Access-Control-Allow-Origin", origin); // Sæt oprindelsen dynamisk
+            ctx.header("Vary", "Origin"); // Tilføj dette for bedre browser-cache håndtering
         }
         ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        ctx.header("Access-Control-Allow-Credentials", "true");
+        ctx.header("Access-Control-Allow-Credentials", "true"); // Tillad credentials (valgfrit)
     }
 
     private static void corsHeadersOptions(Context ctx) {
         String origin = ctx.header("Origin"); // Hent 'Origin' fra anmodningen
-        if (origin != null && (origin.equals("http://localhost:5173") || origin.equals("https://atlas-api.ut-cphb.dk"))) {
+        if (origin != null && (origin.equals("http://localhost:5173") || origin.equals("https://atlasapi.ut-cphb.dk"))) {
             ctx.header("Access-Control-Allow-Origin", origin); // Sæt oprindelsen dynamisk
+            ctx.header("Vary", "Origin"); // Tilføj dette for bedre browser-cache håndtering
         }
         ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        ctx.header("Access-Control-Allow-Credentials", "true");
+        ctx.header("Access-Control-Allow-Credentials", "true"); // Tillad credentials (valgfrit)
         ctx.status(204); // No Content for OPTIONS
     }
 
     public static Javalin startServer() {
         var app = io.javalin.Javalin.create(AppConfig::configuration);
 
+        // Tilføj fejlhåndtering
         exceptionContext(app);
+
+        // Håndter adgangskontrol
         app.beforeMatched(accessController::accessHandler);
 
-        // Add CORS support
+        // Tilføj CORS middleware
         app.before(AppConfig::corsHeaders);
         app.options("/*", AppConfig::corsHeadersOptions);
 
+        // Fejl for 404
         app.error(404, ctx -> ctx.json("Welcome to our GEO API - See the different routes at /routes"));
+
+        // Start serveren
         app.start(ApiProps.PORT);
         return app;
     }
