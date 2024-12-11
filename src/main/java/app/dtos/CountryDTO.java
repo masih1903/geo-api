@@ -23,6 +23,7 @@ public class CountryDTO {
     private String region;
     private long population;
     private CarDTO car;
+    private String flag;
 
     public CountryDTO(Country country) {
         this.name = new NameDTO(country.getCommonName(), country.getOfficialName());
@@ -32,6 +33,7 @@ public class CountryDTO {
         this.region = country.getRegion();
         this.population = country.getPopulation();
         this.car = new CarDTO(country.getDrivingSide(), country.getCarSigns());
+        this.flag = country.getFlag();
     }
 
     public static List<CountryDTO> toCountryDTOList(List<Country> countries) {

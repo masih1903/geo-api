@@ -12,36 +12,41 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Populator {
+public class Populator
+{
 
     private static EntityManagerFactory emf;
     private static CountryDAO countryDao;
 
-    public Populator(EntityManagerFactory emf, CountryDAO countryDao) {
+    public Populator(EntityManagerFactory emf, CountryDAO countryDao)
+    {
         Populator.emf = emf;
         Populator.countryDao = countryDao;
     }
 
-    public List<CountryDTO> populateCountries() {
-        if (emf == null) {
+    public List<CountryDTO> populateCountries()
+    {
+        if (emf == null)
+        {
             throw new IllegalStateException("EntityManagerFactory is not initialized");
         }
 
-        try (var em = emf.createEntityManager()) {
+        try (var em = emf.createEntityManager())
+        {
             em.getTransaction().begin();
 
             // Create country objects
             Country denmark = new Country(
                     "Denmark", "The Kingdom of Denmark", "Danish Krone", "kr", "Europe", 5831404L,
-                    List.of("Copenhagen"), "right", List.of("DK"), Map.of("da", "Danish"));
+                    List.of("Copenhagen"), "right", List.of("DK"), Map.of("da", "Danish"), "flag1");
 
             Country japan = new Country(
                     "Japan", "Japan", "Yen", "¥", "Asia", 125960000L,
-                    List.of("Tokyo"), "left", List.of("J"), Map.of("ja", "Japanese"));
+                    List.of("Tokyo"), "left", List.of("J"), Map.of("ja", "Japanese"), "flag1");
 
             Country usa = new Country(
                     "United States", "United States of America", "US Dollar", "$", "Americas", 331893745L,
-                    List.of("Washington, D.C."), "right", List.of("USA"), Map.of("en", "English"));
+                    List.of("Washington, D.C."), "right", List.of("USA"), Map.of("en", "English"), "flag1");
 
             // Persisting countries to the database
             em.persist(denmark);
@@ -54,7 +59,8 @@ public class Populator {
         }
     }
 
-    public static UserDTO[] populateUsers() {
+    public static UserDTO[] populateUsers()
+    {
 
         User user, admin;
         Role userRole, adminRole;
@@ -66,11 +72,13 @@ public class Populator {
         user.addRole(userRole);
         admin.addRole(adminRole);
 
-        if (emf == null) {
+        if (emf == null)
+        {
             throw new IllegalStateException("EntityManagerFactory is not initialized");
         }
 
-        try (var em = emf.createEntityManager()) {
+        try (var em = emf.createEntityManager())
+        {
             em.getTransaction().begin();
             em.persist(userRole);
             em.persist(adminRole);
@@ -83,19 +91,23 @@ public class Populator {
         return new UserDTO[]{userDTO, adminDTO};
     }
 
-    public void cleanUp() {
-        if (emf == null) {
+    public void cleanUp()
+    {
+        if (emf == null)
+        {
             throw new IllegalStateException("EntityManagerFactory is not initialized");
         }
 
-        try (var em = emf.createEntityManager()) {
+        try (var em = emf.createEntityManager())
+        {
             em.getTransaction().begin();
             em.createQuery("DELETE FROM User").executeUpdate();
             em.createQuery("DELETE FROM Role").executeUpdate();
             em.createQuery("DELETE FROM Country").executeUpdate();
             em.createNativeQuery("ALTER SEQUENCE country_id_seq RESTART WITH 1").executeUpdate();
             em.getTransaction().commit();
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
     }

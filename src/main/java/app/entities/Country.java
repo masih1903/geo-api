@@ -41,10 +41,11 @@ public class Country {
     @MapKeyColumn(name = "language_code")
     @Column(name = "language_name")
     private Map<String, String> languages;
+    private String flag;
 
     public Country(String commonName, String officialName, String currencyName, String currencySymbol,
                    String region, long population, List<String> capitals, String drivingSide,
-                   List<String> carSigns, Map<String, String> languages) {
+                   List<String> carSigns, Map<String, String> languages, String flag) {
 
         this.commonName = commonName;
         this.officialName = officialName;
@@ -56,6 +57,7 @@ public class Country {
         this.drivingSide = drivingSide;
         this.carSigns = carSigns;
         this.languages = languages;
+        this.flag = flag;
     }
 
     public Country(CountryDTO countryDTO) {
@@ -75,6 +77,7 @@ public class Country {
         this.drivingSide = countryDTO.getCar().getSide();
         this.carSigns = countryDTO.getCar().getSigns();
         this.languages = countryDTO.getLanguages();
+        this.flag = countryDTO.getFlag();
 
     }
 

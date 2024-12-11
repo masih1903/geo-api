@@ -3,6 +3,7 @@ package app.services;
 import app.dtos.CountryDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -10,29 +11,39 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 public class CountryService {
     private static final String BASE_URL_ATLAS = "https://restcountries.com/v3.1/all";
 
     public List<CountryDTO> fetchAllData() throws IOException, InterruptedException, URISyntaxException {
-        HttpClient client = HttpClient.newHttpClient();
+        HttpClient client = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_2)
+                .build();
 
-        // Send request for the current page
-        HttpRequest request = HttpRequest
-                .newBuilder()
+        HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(BASE_URL_ATLAS))
+                .header("Accept-Encoding", "gzip")
+                .header("User-Agent", "Java HttpClient")
                 .GET()
                 .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
 
         if (response.statusCode() == 200) {
-            String json = response.body();
+            byte[] compressedBody = response.body();
+
+            // Decompress gzip content
+            String json;
+            try (GZIPInputStream gzipStream = new GZIPInputStream(new ByteArrayInputStream(compressedBody))) {
+                json = new String(gzipStream.readAllBytes());
+            }
+
+            // Map JSON to DTO
             ObjectMapper objectMapper = new ObjectMapper();
-            List<CountryDTO> countries = objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, CountryDTO.class));
-            return countries;
+            return objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, CountryDTO.class));
         } else {
-            System.out.println("Failed to fetch data from the API. Status code: " + response.statusCode());
-            return null;
+            throw new IOException("Failed to fetch data: " + response.statusCode());
         }
     }
 }
