@@ -1,6 +1,7 @@
 package app.dtos;
 
 import app.entities.Country;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CountryDTO {
     private NameDTO name;
     private Map<String, CurrencyDTO> currencies = new HashMap<>();
