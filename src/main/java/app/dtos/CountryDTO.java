@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
-public class CountryDTO {
+public class CountryDTO
+{
     private NameDTO name;
     private Map<String, CurrencyDTO> currencies = new HashMap<>(); // Initialize to avoid null
     private Map<String, String> languages;
@@ -23,7 +24,18 @@ public class CountryDTO {
     private String region;
     private long population;
     private CarDTO car;
-    private String flag;
+    private FlagsDTO flags; // Flags DTO for at håndtere PNG-URL
+
+    // Hvis du ikke har brug for SVG eller andre uventede felter, kan du markere klassen som ignorer ukendte felter
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class FlagsDTO {
+        public String png;
+    }
+
+    public String getFlagUrl()
+    {
+        return this.flags != null ? this.flags.png : null; // Returnér kun PNG-URL
+    }
 
     public CountryDTO(Country country) {
         this.name = new NameDTO(country.getCommonName(), country.getOfficialName());
@@ -33,10 +45,14 @@ public class CountryDTO {
         this.region = country.getRegion();
         this.population = country.getPopulation();
         this.car = new CarDTO(country.getDrivingSide(), country.getCarSigns());
-        this.flag = country.getFlag();
+
+        // Opret FlagsDTO med PNG-URL
+        this.flags = new FlagsDTO();
+        this.flags.png = country.getFlag(); // Gemmer flag-URL fra entiteten
     }
 
-    public static List<CountryDTO> toCountryDTOList(List<Country> countries) {
+    public static List<CountryDTO> toCountryDTOList(List<Country> countries)
+    {
         return countries.stream().map(CountryDTO::new).collect(Collectors.toList());
     }
 

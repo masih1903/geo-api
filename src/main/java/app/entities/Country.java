@@ -41,7 +41,7 @@ public class Country {
     @MapKeyColumn(name = "language_code")
     @Column(name = "language_name")
     private Map<String, String> languages;
-    private String flag;
+    private String flag; // Gem PNG-URL
 
     public Country(String commonName, String officialName, String currencyName, String currencySymbol,
                    String region, long population, List<String> capitals, String drivingSide,
@@ -61,24 +61,23 @@ public class Country {
     }
 
     public Country(CountryDTO countryDTO) {
-
         this.commonName = countryDTO.getName().getCommon();
         this.officialName = countryDTO.getName().getOfficial();
-
-        //Fra Karl
-        // Access the first currency directly from the map
-        CurrencyDTO currencyDTO = countryDTO.getCurrencies().values().stream().findFirst().orElse(null);
-        this.currencyName = (currencyDTO != null) ? currencyDTO.getName() : null; // Or a default value
-        this.currencySymbol = (currencyDTO != null) ? currencyDTO.getSymbol() : null; // Or a default value
-
+        this.currencyName = countryDTO.getCurrencies().values().stream()
+                .findFirst()
+                .map(CurrencyDTO::getName)
+                .orElse(null);
+        this.currencySymbol = countryDTO.getCurrencies().values().stream()
+                .findFirst()
+                .map(CurrencyDTO::getSymbol)
+                .orElse(null);
         this.region = countryDTO.getRegion();
         this.population = countryDTO.getPopulation();
         this.capitals = countryDTO.getCapital();
         this.drivingSide = countryDTO.getCar().getSide();
         this.carSigns = countryDTO.getCar().getSigns();
         this.languages = countryDTO.getLanguages();
-        this.flag = countryDTO.getFlag();
-
+        this.flag = countryDTO.getFlagUrl(); // Gem kun PNG URL
     }
 
 }
