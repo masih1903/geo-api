@@ -34,15 +34,15 @@ class CountryDAOTest {
 
         c1 = new Country("USA", "United States of America", "Dollar",
                 "$", "North America", 331449281, List.of("Washington D.C."),
-                "right", List.of("USA"), Map.of("en", "English"));
+                "right", List.of("USA"), Map.of("en", "English"), "flag1");
 
         c2 = new Country("Denmark", "Denmark", "Dasnke kroner",
                 "DKK", "Europe", 600000, List.of("Copenhagen"),
-                "right", List.of("DK"), Map.of("da", "Danish"));
+                "right", List.of("DK"), Map.of("da", "Danish"), "flag1");
 
         c3 = new Country("Mexico", "United Mexican States", "Mexican Peso",
                 "$", "North America", 128932753, List.of("Mexico City"),
-                "right", List.of("MEX"), Map.of("es", "Spanish"));
+                "right", List.of("MEX"), Map.of("es", "Spanish"), "flag1");
 
 
         countryDAO.create(c1);
@@ -82,7 +82,7 @@ class CountryDAOTest {
 
         Country country = new Country("Canada", "Canada", "Canadian Dollar",
                 "$", "North America", 37742154, List.of("Ottawa"),
-                "right", List.of("CAN"), Map.of("en", "English"));
+                "right", List.of("CAN"), Map.of("en", "English"), "flag1");
 
         countryDAO.create(country);
         assertEquals(4, country.getId());
