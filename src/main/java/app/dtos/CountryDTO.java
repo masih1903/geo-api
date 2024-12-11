@@ -1,7 +1,6 @@
 package app.dtos;
 
 import app.entities.Country;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +10,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 public class CountryDTO {
     private NameDTO name;
@@ -21,15 +19,10 @@ public class CountryDTO {
     private String region;
     private long population;
     private CarDTO car;
-    private FlagsDTO flags; // Flags DTO til PNG-URL
-
-    @JsonIgnoreProperties(ignoreUnknown = true) // Ignorer ukendte felter som SVG
-    public static class FlagsDTO {
-        public String png;
-    }
+    private FlagsDTO flags; // Brug den nye FlagsDTO-klasse
 
     public String getFlagUrl() {
-        return this.flags != null ? this.flags.png : null;
+        return this.flags != null ? this.flags.getPng() : null;
     }
 
     public CountryDTO(Country country) {
@@ -43,7 +36,7 @@ public class CountryDTO {
 
         // Opret FlagsDTO med PNG-URL
         this.flags = new FlagsDTO();
-        this.flags.png = country.getFlag(); // Gem PNG-URL fra entiteten
+        this.flags.setPng(country.getFlag()); // Gem PNG-URL fra entiteten
     }
 
     public static List<CountryDTO> toCountryDTOList(List<Country> countries) {
