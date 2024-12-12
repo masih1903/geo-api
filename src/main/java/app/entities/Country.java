@@ -21,7 +21,8 @@ public class Country {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private Long id;
-
+    private String cca2;
+    private Boolean independent;
     private String commonName;
     private String officialName;
     private String currencyName;
@@ -43,10 +44,12 @@ public class Country {
     private Map<String, String> languages;
     private String flag; // Gem PNG-URL
 
-    public Country(String commonName, String officialName, String currencyName, String currencySymbol,
+    public Country(String cca2, Boolean independent, String commonName, String officialName, String currencyName, String currencySymbol,
                    String region, long population, List<String> capitals, String drivingSide,
                    List<String> carSigns, Map<String, String> languages, String flag) {
 
+        this.cca2 = cca2;
+        this.independent = independent;
         this.commonName = commonName;
         this.officialName = officialName;
         this.currencyName = currencyName;
@@ -61,6 +64,8 @@ public class Country {
     }
 
     public Country(CountryDTO countryDTO) {
+        this.cca2 = countryDTO.getCca2();
+        this.independent = countryDTO.getIndependent();
         this.commonName = countryDTO.getName().getCommon();
         this.officialName = countryDTO.getName().getOfficial();
         this.currencyName = countryDTO.getCurrencies().values().stream()

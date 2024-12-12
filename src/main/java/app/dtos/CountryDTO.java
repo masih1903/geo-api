@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CountryDTO {
+    private String cca2;
+    private Boolean independent;
     private NameDTO name;
     private Map<String, CurrencyDTO> currencies = new HashMap<>();
     private Map<String, String> languages;
@@ -28,6 +30,8 @@ public class CountryDTO {
     }
 
     public CountryDTO(Country country) {
+        this.cca2 = country.getCca2();
+        this.independent = country.getIndependent();
         this.name = new NameDTO(country.getCommonName(), country.getOfficialName());
         this.currencies = Map.of("currency", new CurrencyDTO(country.getCurrencyName(), country.getCurrencySymbol()));
         this.languages = country.getLanguages();

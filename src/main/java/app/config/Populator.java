@@ -36,15 +36,15 @@ public class Populator
             em.getTransaction().begin();
 
             // Create country objects
-            Country denmark = new Country(
+            Country denmark = new Country("DK", true,
                     "Denmark", "The Kingdom of Denmark", "Danish Krone", "kr", "Europe", 5831404L,
                     List.of("Copenhagen"), "right", List.of("DK"), Map.of("da", "Danish"), "flag1");
 
-            Country japan = new Country(
+            Country japan = new Country("JP", true,
                     "Japan", "Japan", "Yen", "¥", "Asia", 125960000L,
                     List.of("Tokyo"), "left", List.of("J"), Map.of("ja", "Japanese"), "flag1");
 
-            Country usa = new Country(
+            Country usa = new Country("US", true,
                     "United States", "United States of America", "US Dollar", "$", "Americas", 331893745L,
                     List.of("Washington, D.C."), "right", List.of("USA"), Map.of("en", "English"), "flag1");
 
