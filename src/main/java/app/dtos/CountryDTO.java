@@ -1,6 +1,7 @@
 package app.dtos;
 
 import app.entities.Country;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class CountryDTO {
     private CarDTO car;
     private FlagsDTO flags; // Brug den nye FlagsDTO-klasse
 
+    @JsonIgnore
     public String getFlagUrl() {
         return this.flags != null ? this.flags.getPng() : null;
     }
